@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --pink-50:#fbfaf8;
+  --pink-100:#f4f2ee;
+  --pink-200:#ebe8e2;
+  --pink-300:#dcd8d0;
+  --pink-500:#3d3d3d;
+  --pink-600:#555555;
+  --ink:#2b2b2b;
+  --ink-soft:#6f6f6f;
+  --line:#e8e5df;
+  --code-bg:#fdfcfa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.top{background:var(--pink-50);border-bottom:1px solid var(--line);padding:22px 5vw;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.top h1{font-size:clamp(1.3rem,2.6vw,1.9rem);font-weight:800;letter-spacing:-.01em}
+.top p{color:var(--pink-600);font-size:.95rem;margin-top:2px;font-weight:500}
+.tools{display:flex;gap:12px;flex-wrap:wrap}
+.tools input{width:min(340px,80vw);padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:.92rem}
+.tools input:focus,.btn:focus-visible,.chip:focus-visible,.exp-head:focus-visible{outline:2px solid var(--pink-500);outline-offset:2px}
+.btn{padding:12px 18px;border:1px solid var(--pink-300);border-radius:12px;background:var(--pink-100);color:var(--pink-600);font:inherit;font-weight:700;font-size:.92rem;cursor:pointer}
+.btn:hover{background:var(--pink-200)}
+main{padding:32px 5vw 60px;max-width:1500px;margin:0 auto}
+.panel{border:1px solid var(--line);border-radius:22px;padding:30px;background:linear-gradient(180deg,var(--pink-50),#fff)}
+.panel h2{font-size:1.6rem;font-weight:800;display:flex;align-items:center;gap:12px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--pink-500);box-shadow:0 0 0 5px var(--pink-100)}
+.panel>p{color:var(--ink-soft);margin:10px 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:1.05rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.tag{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:8px;background:var(--pink-100);color:var(--pink-600);border:1px solid var(--pink-200)}
+.card .sub{color:var(--ink-soft);font-size:.88rem;flex:1;min-height:40px}
+.copy{width:100%;padding:12px;border:1px solid var(--pink-300);border-radius:11px;background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;transition:background .15s}
+.copy:hover{background:var(--pink-100)}
+.copy.done{background:#eaf6ef;color:#1f7a52;border-color:#bfe3cf}
+.bar{display:flex;justify-content:space-between;align-items:center;margin:34px 0 18px;flex-wrap:wrap;gap:12px}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{padding:11px 18px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-weight:700;font-size:.9rem;cursor:pointer}
+.chip.on{background:var(--pink-100);border-color:var(--pink-500);color:var(--ink)}
+.count{color:var(--ink-soft);font-size:1.05rem;font-weight:600}
+.exp{border:1px solid var(--line);border-radius:20px;background:#fff;margin-bottom:16px;overflow:hidden}
+.exp-head{width:100%;display:flex;gap:14px;align-items:center;text-align:left;padding:20px 24px;background:var(--pink-50);border:0;cursor:pointer;font:inherit;color:var(--ink)}
+.exp-head .no{font-size:.75rem;font-weight:800;color:var(--pink-600);background:var(--pink-100);border:1px solid var(--pink-200);border-radius:8px;padding:4px 10px;white-space:nowrap}
+.exp-head .ttl{font-weight:800;font-size:1.1rem;flex:1}
+.exp-head .arrow{font-size:1.2rem;color:var(--pink-600);transition:transform .2s}
+.exp.open .arrow{transform:rotate(180deg)}
+.exp-body{display:none;padding:22px 24px 26px}
+.exp.open .exp-body{display:block}
+.q{background:var(--pink-50);border-left:4px solid var(--pink-300);border-radius:10px;padding:14px 18px;color:var(--ink);font-size:.95rem;margin-bottom:12px}
+.ds{color:var(--ink-soft);font-size:.85rem;margin-bottom:16px}
+.ds b{color:var(--pink-600)}
+.codewrap{position:relative;border:1px solid var(--line);border-radius:14px;background:var(--code-bg)}
+.codewrap .copy{position:absolute;top:12px;right:12px;width:auto;padding:9px 16px;z-index:2}
+pre{overflow:auto;max-height:520px;padding:20px;padding-top:56px;font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:.82rem;line-height:1.65;color:#333333;tab-size:4}
+.empty{text-align:center;color:var(--ink-soft);padding:40px}
+footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:0 5vw 40px}
+@media (max-width:600px){.panel{padding:20px}.exp-head{padding:16px}.exp-body{padding:16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Machine Learning Lab Experiments</h1>
+    <p>11 Experiments (Exp 01 – Exp 11) • Instant One-Click Copy</p>
+  </div>
+  <div class="tools">
+    <input id="search" type="search" placeholder="Search experiment #, title, or code..." aria-label="Search experiments">
+    <button class="btn" id="toggleAll">Collapse All</button>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <h2><span class="dot"></span>Quick One-Click Copy Panel</h2>
+    <p>Copy complete source code with one click.</p>
+    <div class="grid" id="quick"></div>
+  </section>
+  <div class="bar">
+    <div class="chips">
+      <button class="chip on" id="chipAll">All Experiments (11)</button>
+      <button class="chip" id="chipPy">Python (11)</button>
+    </div>
+    <div class="count" id="count">Showing 11 of 11 experiments</div>
+  </div>
+  <div id="list"></div>
+</main>
+<footer>Keep the dataset CSV files in the same folder as your notebook before running.</footer>
+<script type="text/plain" id="code-1">
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+df = pd.read_csv("titanic.csv")
+print(df.head())
+
+print(df.isnull().sum())
+
+df["Age"] = df["Age"].fillna(df["Age"].median())
+df["Fare"] = df["Fare"].fillna(df["Fare"].median())
+df["Embarked"] = df["Embarked"].fillna(df["Embarked"].mode()[0])
+
+df.drop("Cabin", axis=1, inplace=True)
+print(df.isnull().sum())
+
+le = LabelEncoder()
+
+df["Sex"] = le.fit_transform(df["Sex"])
+df["Embarked"] = le.fit_transform(df["Embarked"])
+
+print(df.head())
+
+scaler = StandardScaler()
+df[["Age", "Fare"]] = scaler.fit_transform(df[["Age", "Fare"]])
+print(df.head())
+
+df.to_csv("Titanic_Cleaned.csv", index=False)
+print("Dataset Ready for Machine Learning")
+</script>
+<script type="text/plain" id="code-2">
+import pandas as pd
+import time
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.metrics import accuracy_score
+
+df = pd.read_csv("breast cancer.csv")
+
+print(df.head())
+print(df.shape)
+
+if "id" in df.columns:
+    df.drop("id", axis=1, inplace=True)
+
+if "Unnamed: 32" in df.columns:
+    df.drop("Unnamed: 32", axis=1, inplace=True)
+
+print(df.columns)
+
+print(df.isnull().sum())
+
+df.dropna(inplace=True)
+
+print("After removing NaN:")
+print(df.isnull().sum().sum())
+
+X = df.drop("diagnosis", axis=1)
+
+y = df["diagnosis"]
+
+y = y.map({
+    "M": 1,
+    "B": 0
+})
+
+print(X.shape)
+print(y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+print(X_train.shape)
+print(X_test.shape)
+
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+
+X_test = scaler.transform(X_test)
+
+start = time.time()
+
+model = LogisticRegression(max_iter=5000)
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+original_accuracy = accuracy_score(y_test, y_pred)
+
+original_time = time.time() - start
+
+print("Original Accuracy:", original_accuracy)
+print("Original Time:", original_time)
+
+start = time.time()
+
+pca = PCA(n_components=2)
+
+X_train_pca = pca.fit_transform(X_train)
+
+X_test_pca = pca.transform(X_test)
+
+model_pca = LogisticRegression(max_iter=5000)
+
+model_pca.fit(X_train_pca, y_train)
+
+y_pred_pca = model_pca.predict(X_test_pca)
+
+pca_accuracy = accuracy_score(y_test, y_pred_pca)
+
+pca_time = time.time() - start
+
+print("PCA Accuracy:", pca_accuracy)
+print("PCA Time:", pca_time)
+
+start = time.time()
+
+lda = LDA(n_components=1)
+
+X_train_lda = lda.fit_transform(X_train, y_train)
+
+X_test_lda = lda.transform(X_test)
+
+model_lda = LogisticRegression(max_iter=5000)
+
+model_lda.fit(X_train_lda, y_train)
+
+y_pred_lda = model_lda.predict(X_test_lda)
+
+lda_accuracy = accuracy_score(y_test, y_pred_lda)
+
+lda_time = time.time() - start
+
+print("LDA Accuracy:", lda_accuracy)
+print("LDA Time:", lda_time)
+
+print("Original Features:", X.shape[1])
+print("PCA Features:", X_train_pca.shape[1])
+print("LDA Features:", X_train_lda.shape[1])
+
+comparison = pd.DataFrame({
+    "Method": ["Original", "PCA", "LDA"],
+    "Features": [X.shape[1], X_train_pca.shape[1], X_train_lda.shape[1]],
+    "Accuracy": [original_accuracy, pca_accuracy, lda_accuracy],
+    "Execution Time": [original_time, pca_time, lda_time]
+})
+
+print(comparison)
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 6))
+plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=y_train, cmap="coolwarm")
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("PCA Scatter Plot - Breast Cancer Dataset")
+plt.colorbar(label="Diagnosis")
+plt.show()
+
+plt.figure(figsize=(8, 6))
+plt.scatter(X_train_lda[:, 0], [0] * len(X_train_lda), c=y_train, cmap="coolwarm")
+plt.xlabel("Linear Discriminant 1")
+plt.title("LDA Scatter Plot - Breast Cancer Dataset")
+plt.yticks([])
+plt.colorbar(label="Diagnosis")
+plt.show()
+
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=y_train, cmap="coolwarm")
+plt.title("PCA")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+
+plt.subplot(1, 2, 2)
+plt.scatter(X_train_lda[:, 0], [0] * len(X_train_lda), c=y_train, cmap="coolwarm")
+plt.title("LDA")
+plt.xlabel("LD1")
+plt.yticks([])
+
+plt.show()
+</script>
+<script type="text/plain" id="code-3">
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.datasets import fetch_california_housing
+from sklearn.metrics import mean_squared_error, r2_score
+
+california_housing = fetch_california_housing()
+
+X = pd.DataFrame(
+    california_housing.data,
+    columns=california_housing.feature_names
+)
+
+y = pd.Series(california_housing.target)
+
+X = X[['MedInc', 'AveRooms']]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+model = LinearRegression()
+
+model.fit(X_train, y_train)
+
+print("Intercept:", model.intercept_)
+print("Coefficients:", model.coef_)
+
+y_pred = model.predict(X_test)
+
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(X_test['MedInc'], X_test['AveRooms'], y_test, color='black')
+
+x1 = np.linspace(X_test['MedInc'].min(), X_test['MedInc'].max(), 20)
+x2 = np.linspace(X_test['AveRooms'].min(), X_test['AveRooms'].max(), 20)
+x1, x2 = np.meshgrid(x1, x2)
+
+z = model.intercept_ + model.coef_[0] * x1 + model.coef_[1] * x2
+
+ax.plot_surface(x1, x2, z, color='yellow', alpha=0.5)
+
+ax.set_xlabel('Median Income')
+ax.set_ylabel('Average Rooms')
+ax.set_zlabel('House Price')
+ax.set_title('Multiple Linear Regression Best Fit Line (3D)')
+
+plt.show()
+
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean Squared Error (MSE):", mse)
+print("Root Mean Squared Error (RMSE):", rmse)
+print("R^2 Score:", r2)
+</script>
+<script type="text/plain" id="code-4">
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures, LabelEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score
+
+data = pd.read_csv("breast-cancer.csv")
+
+print("First 5 Rows")
+print(data.head())
+
+print("\nDataset Info")
+data.info()
+
+print("\nStatistical Summary")
+print(data.describe())
+
+print("\nMissing Values")
+print(data.isnull().sum())
+
+data = data.dropna()
+
+if 'id' in data.columns:
+    data = data.drop('id', axis=1)
+
+print("\nColumns in Dataset")
+print(data.columns)
+
+if 'diagnosis' in data.columns:
+    X = data.drop('diagnosis', axis=1)
+    y = data['diagnosis']
+else:
+    X = data.iloc[:, :-1]
+    y = data.iloc[:, -1]
+
+if y.dtype == 'object':
+    le = LabelEncoder()
+    y = le.fit_transform(y)
+
+X = pd.get_dummies(X, drop_first=True)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+degrees = [1, 2, 3, 4, 5]
+
+train_accuracy = []
+test_accuracy = []
+
+for degree in degrees:
+
+    model = Pipeline([
+        ('scaler', StandardScaler()),
+        ('poly', PolynomialFeatures(degree=degree)),
+        ('logistic', LogisticRegression(max_iter=10000))
+    ])
+
+    model.fit(X_train, y_train)
+
+    train_pred = model.predict(X_train)
+    test_pred = model.predict(X_test)
+
+    train_acc = accuracy_score(y_train, train_pred)
+    test_acc = accuracy_score(y_test, test_pred)
+
+    train_accuracy.append(train_acc)
+    test_accuracy.append(test_acc)
+
+    print("\nDegree =", degree)
+    print("Training Accuracy :", round(train_acc, 4))
+    print("Testing Accuracy  :", round(test_acc, 4))
+
+plt.figure(figsize=(8,5))
+plt.plot(degrees, train_accuracy, marker='o', label='Training Accuracy')
+plt.plot(degrees, test_accuracy, marker='s', label='Testing Accuracy')
+plt.xlabel("Polynomial Degree")
+plt.ylabel("Accuracy")
+plt.title("Bias-Variance Trade-off")
+plt.xticks(degrees)
+plt.grid(True)
+plt.legend()
+plt.show()
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+X, y = make_regression(n_samples=200,
+                       n_features=1,
+                       noise=20,
+                       random_state=42)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+degrees = [1, 2, 3, 4, 5]
+
+mse_list = []
+rmse_list = []
+
+for degree in degrees:
+
+    poly = PolynomialFeatures(degree=degree)
+
+    X_train_poly = poly.fit_transform(X_train)
+    X_test_poly = poly.transform(X_test)
+
+    model = LinearRegression()
+    model.fit(X_train_poly, y_train)
+
+    y_pred = model.predict(X_test_poly)
+
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+
+    mse_list.append(mse)
+    rmse_list.append(rmse)
+
+comparison = pd.DataFrame({
+    'Degree': degrees,
+    'MSE': mse_list,
+    'RMSE': rmse_list
+})
+
+print(comparison)
+
+plt.figure(figsize=(8,5))
+plt.plot(degrees, mse_list, marker='o', color='blue')
+plt.xlabel("Polynomial Degree")
+plt.ylabel("MSE")
+plt.title("Degree vs MSE")
+plt.grid(True)
+plt.show()
+
+plt.figure(figsize=(8,5))
+plt.plot(degrees, rmse_list, marker='s', color='red')
+plt.xlabel("Polynomial Degree")
+plt.ylabel("RMSE")
+plt.title("Degree vs RMSE")
+plt.grid(True)
+plt.show()
+
+X_plot = np.sort(X, axis=0)
+X_plot_poly = poly.transform(X_plot)
+y_plot = model.predict(X_plot_poly)
+
+plt.scatter(X, y, color='blue', label='Actual Data')
+plt.plot(X_plot, y_plot, color='red', linewidth=2,
+         label=f'Polynomial Degree {degree}')
+
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title(f"Polynomial Regression (Degree {degree})")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+degrees = [1, 2, 3, 4, 5]
+
+for degree in degrees:
+
+    poly = PolynomialFeatures(degree=degree)
+
+    X_train_poly = poly.fit_transform(X_train)
+    X_test_poly = poly.transform(X_test)
+
+    model = LinearRegression()
+    model.fit(X_train_poly, y_train)
+
+    X_plot = np.sort(X, axis=0)
+    X_plot_poly = poly.transform(X_plot)
+    y_plot = model.predict(X_plot_poly)
+
+    plt.figure(figsize=(8,5))
+    plt.scatter(X, y, color='blue', label='Actual Data')
+    plt.plot(X_plot, y_plot, color='red',
+             label=f'Degree {degree}')
+    plt.title(f'Polynomial Regression (Degree {degree})')
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+</script>
+<script type="text/plain" id="code-5">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+import statsmodels.api as sm
+
+df = pd.read_csv("BostonHousing.csv")
+
+df.columns = df.columns.str.strip().str.lower()
+
+target_candidates = ["medv", "price", "target"]
+
+target = next((col for col in target_candidates if col in df.columns), df.columns[-1])
+
+df = df.dropna()
+
+X = df.drop(columns=[target])
+y = df[target]
+
+X = pd.get_dummies(X, drop_first=True)
+X = X.astype(float)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+models = {
+    "Linear Regression": LinearRegression(),
+    "Ridge Regression": Ridge(alpha=1.0),
+    "Lasso Regression": Lasso(alpha=0.1, max_iter=10000)
+}
+
+results = []
+
+for name, model in models.items():
+
+    model.fit(X_train_scaled, y_train)
+
+    train_pred = model.predict(X_train_scaled)
+    test_pred = model.predict(X_test_scaled)
+
+    train_r2 = r2_score(y_train, train_pred)
+    test_r2 = r2_score(y_test, test_pred)
+
+    train_rmse = np.sqrt(mean_squared_error(y_train, train_pred))
+    test_rmse = np.sqrt(mean_squared_error(y_test, test_pred))
+
+    train_mae = mean_absolute_error(y_train, train_pred)
+    test_mae = mean_absolute_error(y_test, test_pred)
+
+    results.append([
+        name,
+        train_r2,
+        test_r2,
+        train_rmse,
+        test_rmse,
+        train_mae,
+        test_mae
+    ])
+
+results_df = pd.DataFrame(
+    results,
+    columns=[
+        "Model",
+        "Train R2",
+        "Test R2",
+        "Train RMSE",
+        "Test RMSE",
+        "Train MAE",
+        "Test MAE"
+    ]
+)
+
+print("\nModel Performance:")
+print(results_df.round(4))
+
+vif_data = pd.DataFrame()
+vif_data["Feature"] = X.columns
+vif_data["VIF"] = [
+    variance_inflation_factor(X.values, i)
+    for i in range(X.shape[1])
+]
+
+print("\nVariance Inflation Factor:")
+print(vif_data.sort_values("VIF", ascending=False).round(4))
+
+linear_model = models["Linear Regression"]
+ridge_model = models["Ridge Regression"]
+lasso_model = models["Lasso Regression"]
+
+coefficient_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Linear": linear_model.coef_,
+    "Ridge": ridge_model.coef_,
+    "Lasso": lasso_model.coef_
+})
+
+coefficient_df["Linear_Abs"] = np.abs(coefficient_df["Linear"])
+coefficient_df["Ridge_Abs"] = np.abs(coefficient_df["Ridge"])
+coefficient_df["Lasso_Abs"] = np.abs(coefficient_df["Lasso"])
+
+print("\nModel Coefficients:")
+print(coefficient_df.round(4))
+
+print("\nNumber of non-zero Lasso coefficients:",
+      np.sum(lasso_model.coef_ != 0))
+
+print("\nOverfitting Gap:")
+results_df["R2 Gap"] = results_df["Train R2"] - results_df["Test R2"]
+print(results_df[["Model", "R2 Gap"]].round(4))
+
+plt.figure(figsize=(10, 6))
+sns.barplot(data=results_df, x="Model", y="Test R2")
+plt.ylim(0, 1)
+plt.title("Test R² Comparison")
+plt.xticks(rotation=15)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 6))
+sns.barplot(data=results_df, x="Model", y="Test RMSE")
+plt.title("Test RMSE Comparison")
+plt.xticks(rotation=15)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(12, 7))
+sns.heatmap(df.select_dtypes(include=np.number).corr(), cmap="coolwarm", annot=False)
+plt.title("Correlation Heatmap")
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(12, 7))
+sns.barplot(
+    data=vif_data.sort_values("VIF", ascending=False),
+    x="VIF",
+    y="Feature"
+)
+
+plt.axvline(5, color="orange", linestyle="--")
+plt.axvline(10, color="red", linestyle="--")
+plt.title("Variance Inflation Factor")
+plt.tight_layout()
+plt.show()
+
+coef_plot = coefficient_df.set_index("Feature")[["Linear", "Ridge", "Lasso"]]
+
+coef_plot.plot(kind="bar", figsize=(14, 7))
+plt.title("Coefficient Comparison")
+plt.ylabel("Coefficient Value")
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.show()
+</script>
+<script type="text/plain" id="code-6">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report,
+    accuracy_score
+)
+
+df = pd.read_csv("breast-cancer.csv")
+
+print(df.head())
+print(df.isnull().sum())
+print(df.shape)
+print(df.columns)
+
+df = df.drop("id", axis=1)
+
+df["diagnosis"] = df["diagnosis"].map({"M": 1, "B": 0})
+
+X = df.drop("diagnosis", axis=1)
+y = df["diagnosis"]
+
+print("Features shape:", X.shape)
+print("Target shape:", y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Training data:", X_train.shape)
+print("Testing data:", X_test.shape)
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+
+model = LogisticRegression(max_iter=5000, random_state=42)
+
+model.fit(X_train_scaled, y_train)
+
+print("Logistic Regression model trained successfully.")
+
+y_pred = model.predict(X_test_scaled)
+
+print("Predicted values:")
+print(y_pred)
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+print("Accuracy :", accuracy)
+print("Precision:", precision)
+print("Recall   :", recall)
+print("F1-Score :", f1)
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+
+plt.figure(figsize=(6, 5))
+
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Benign", "Malignant"],
+    yticklabels=["Benign", "Malignant"]
+)
+
+plt.xlabel("Predicted Class")
+plt.ylabel("Actual Class")
+plt.title("Confusion Matrix - Logistic Regression")
+plt.show()
+
+print(classification_report(y_test, y_pred))
+</script>
+<script type="text/plain" id="code-7">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    classification_report,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix
+)
+
+df = pd.read_csv("breast-cancer.csv")
+
+print(df.head())
+df.info()
+print(df.describe())
+print(df.isnull().sum())
+
+X = df.drop(["id", "diagnosis"], axis=1)
+y = df["diagnosis"]
+
+print("Features shape:", X.shape)
+print("Target shape:", y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Training data:", X_train.shape)
+print("Testing data:", X_test.shape)
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+
+linear_svm = SVC(kernel="linear", C=1.0, random_state=42)
+
+linear_svm.fit(X_train_scaled, y_train)
+
+y_pred_linear = linear_svm.predict(X_test_scaled)
+
+print("Linear SVM Classification Report:")
+print(classification_report(y_test, y_pred_linear))
+
+linear_accuracy = accuracy_score(y_test, y_pred_linear)
+linear_precision = precision_score(y_test, y_pred_linear, pos_label="M")
+linear_recall = recall_score(y_test, y_pred_linear, pos_label="M")
+linear_f1 = f1_score(y_test, y_pred_linear, pos_label="M")
+
+print("Linear SVM Results")
+print("Accuracy :", round(linear_accuracy, 4))
+print("Precision:", round(linear_precision, 4))
+print("Recall   :", round(linear_recall, 4))
+print("F1-Score :", round(linear_f1, 4))
+
+cm_linear = confusion_matrix(y_test, y_pred_linear)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(
+    cm_linear,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Benign", "Malignant"],
+    yticklabels=["Benign", "Malignant"]
+)
+plt.title("Confusion Matrix - Linear SVM")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+rbf_svm = SVC(kernel="rbf", C=1.0, gamma="scale", random_state=42)
+
+rbf_svm.fit(X_train_scaled, y_train)
+
+y_pred_rbf = rbf_svm.predict(X_test_scaled)
+
+print("RBF SVM Classification Report:")
+print(classification_report(y_test, y_pred_rbf))
+
+rbf_accuracy = accuracy_score(y_test, y_pred_rbf)
+rbf_precision = precision_score(y_test, y_pred_rbf, pos_label="M")
+rbf_recall = recall_score(y_test, y_pred_rbf, pos_label="M")
+rbf_f1 = f1_score(y_test, y_pred_rbf, pos_label="M")
+
+print("RBF SVM Results")
+print("Accuracy :", round(rbf_accuracy, 4))
+print("Precision:", round(rbf_precision, 4))
+print("Recall   :", round(rbf_recall, 4))
+print("F1-Score :", round(rbf_f1, 4))
+
+cm_rbf = confusion_matrix(y_test, y_pred_rbf)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(
+    cm_rbf,
+    annot=True,
+    fmt="d",
+    cmap="Greens",
+    xticklabels=["Benign", "Malignant"],
+    yticklabels=["Benign", "Malignant"]
+)
+plt.title("Confusion Matrix - RBF SVM")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+comparison = pd.DataFrame({
+    "Model": ["Linear SVM", "RBF SVM"],
+    "Accuracy": [linear_accuracy, rbf_accuracy],
+    "Precision": [linear_precision, rbf_precision],
+    "Recall": [linear_recall, rbf_recall],
+    "F1-Score": [linear_f1, rbf_f1]
+})
+
+print(comparison)
+
+comparison_percentage = comparison.copy()
+
+metrics = ["Accuracy", "Precision", "Recall", "F1-Score"]
+
+for metric in metrics:
+    comparison_percentage[metric] = (
+        comparison_percentage[metric] * 100
+    ).round(2)
+
+print(comparison_percentage)
+
+comparison_plot = comparison.set_index("Model")
+
+comparison_plot.plot(kind="bar", figsize=(9, 5))
+plt.title("Performance Comparison of Linear and RBF SVM")
+plt.xlabel("SVM Model")
+plt.ylabel("Score")
+plt.ylim(0, 1.05)
+plt.xticks(rotation=0)
+plt.legend(loc="lower right")
+plt.show()
+</script>
+<script type="text/plain" id="code-8">
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+df = pd.read_csv("iris.csv")
+
+print(df.head())
+print(df.shape)
+print(df.columns)
+df.info()
+print(df.describe())
+print(df.isnull().sum())
+
+X = df[["sepal_length", "sepal_width", "petal_length", "petal_width"]]
+
+print(X.head())
+
+scaler = StandardScaler()
+
+X_scaled = scaler.fit_transform(X)
+
+wcss = []
+
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, random_state=42, n_init=10)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
+
+print(wcss)
+
+plt.figure(figsize=(7, 5))
+plt.plot(range(1, 11), wcss, marker="o")
+plt.title("Elbow Method")
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.show()
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+
+clusters = kmeans.fit_predict(X_scaled)
+
+df["Cluster"] = clusters
+
+print(df.head())
+
+print(df["Cluster"].value_counts().sort_index())
+
+plt.figure(figsize=(7, 5))
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters)
+plt.title("K-Means Clustering")
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+plt.show()
+
+print("Cluster Centers:")
+print(kmeans.cluster_centers_)
+</script>
+<script type="text/plain" id="code-9">
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import DBSCAN
+
+X, y = make_blobs(
+    n_samples=300,
+    centers=3,
+    cluster_std=0.6,
+    random_state=42
+)
+
+np.random.seed(42)
+
+noise = np.random.uniform(
+    low=-10,
+    high=10,
+    size=(20, 2)
+)
+
+X = np.vstack((X, noise))
+
+X = StandardScaler().fit_transform(X)
+
+model = DBSCAN(eps=0.3, min_samples=5)
+
+labels = model.fit_predict(X)
+
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise = np.sum(labels == -1)
+
+print("Number of clusters:", n_clusters)
+print("Number of noise points:", n_noise)
+
+plt.figure(figsize=(8, 6))
+
+for label in set(labels):
+    points = X[labels == label]
+
+    if label == -1:
+        plt.scatter(
+            points[:, 0],
+            points[:, 1],
+            c="black",
+            marker="x",
+            s=70,
+            label="Noise Points"
+        )
+    else:
+        plt.scatter(
+            points[:, 0],
+            points[:, 1],
+            s=40,
+            label=f"Cluster {label + 1}"
+        )
+
+plt.title("DBSCAN Clustering with Noise Points")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+plt.grid(True)
+plt.show()
+</script>
+<script type="text/plain" id="code-10">
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("iris.csv")
+
+print(df.head())
+print(df.isnull().sum())
+
+X = df[["sepal_length", "sepal_width", "petal_length", "petal_width"]]
+y = df["species"]
+
+print("Features shape:", X.shape)
+print("Target shape:", y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=4
+)
+
+print("Training data:", X_train.shape)
+print("Testing data:", X_test.shape)
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+
+logistic_model = LogisticRegression(random_state=42)
+
+logistic_model.fit(X_train_scaled, y_train)
+
+y_pred_logistic = logistic_model.predict(X_test_scaled)
+
+logistic_accuracy = accuracy_score(y_test, y_pred_logistic)
+logistic_precision = precision_score(y_test, y_pred_logistic, average="weighted")
+logistic_recall = recall_score(y_test, y_pred_logistic, average="weighted")
+logistic_f1 = f1_score(y_test, y_pred_logistic, average="weighted")
+
+print("Logistic Regression Results")
+print("Accuracy :", round(logistic_accuracy, 4))
+print("Precision:", round(logistic_precision, 4))
+print("Recall   :", round(logistic_recall, 4))
+print("F1-Score :", round(logistic_f1, 4))
+
+print("Classification Report - Logistic Regression")
+print(classification_report(y_test, y_pred_logistic))
+
+random_forest = RandomForestClassifier(n_estimators=100, random_state=42)
+
+random_forest.fit(X_train, y_train)
+
+y_pred_rf = random_forest.predict(X_test)
+
+rf_accuracy = accuracy_score(y_test, y_pred_rf)
+rf_precision = precision_score(y_test, y_pred_rf, average="weighted")
+rf_recall = recall_score(y_test, y_pred_rf, average="weighted")
+rf_f1 = f1_score(y_test, y_pred_rf, average="weighted")
+
+print("Random Forest Results")
+print("Accuracy :", round(rf_accuracy, 4))
+print("Precision:", round(rf_precision, 4))
+print("Recall   :", round(rf_recall, 4))
+print("F1-Score :", round(rf_f1, 4))
+
+print("Classification Report - Random Forest")
+print(classification_report(y_test, y_pred_rf))
+
+comparison = pd.DataFrame({
+    "Model": ["Logistic Regression", "Random Forest"],
+    "Accuracy": [logistic_accuracy, rf_accuracy],
+    "Precision": [logistic_precision, rf_precision],
+    "Recall": [logistic_recall, rf_recall],
+    "F1-Score": [logistic_f1, rf_f1]
+})
+
+print(comparison)
+
+comparison_plot = comparison.set_index("Model")
+
+comparison_plot.plot(kind="bar", figsize=(8, 5))
+plt.title("Comparison of Baseline and Ensemble Model")
+plt.xlabel("Model")
+plt.ylabel("Score")
+plt.ylim(0, 1.05)
+plt.xticks(rotation=0)
+plt.show()
+</script>
+<script type="text/plain" id="code-11">
+import numpy as np
+import random
+import matplotlib.pyplot as plt
+
+grid = np.array([
+    [0, 0, 0, 0],
+    [0, -1, 0, 0],
+    [0, 0, -1, 0],
+    [0, 0, 0, 9]
+])
+
+rows = 4
+cols = 4
+start = (0, 0)
+goal = (3, 3)
+actions = ["up", "down", "left", "right"]
+
+print(grid)
+
+def move(state, action):
+    row, col = state
+
+    if action == "up":
+        row = row - 1
+    elif action == "down":
+        row = row + 1
+    elif action == "left":
+        col = col - 1
+    elif action == "right":
+        col = col + 1
+
+    if row < 0 or row >= rows or col < 0 or col >= cols:
+        return state, -1
+
+    if grid[row, col] == -1:
+        return state, -1
+
+    if grid[row, col] == 9:
+        return (row, col), 10
+
+    return (row, col), -0.1
+
+q_table = np.zeros((rows * cols, len(actions)))
+
+learning_rate = 0.1
+discount_factor = 0.9
+epsilon = 1.0
+epsilon_min = 0.01
+epsilon_decay = 0.995
+episodes = 1000
+
+print("Initial Q-table:")
+print(q_table)
+
+def state_number(state):
+    return state[0] * cols + state[1]
+
+rewards = []
+
+for episode in range(episodes):
+    state = start
+    total_reward = 0
+
+    for step in range(100):
+        state_index = state_number(state)
+
+        if random.random() < epsilon:
+            action_index = random.randint(0, 3)
+        else:
+            action_index = np.argmax(q_table[state_index])
+
+        action = actions[action_index]
+
+        next_state, reward = move(state, action)
+
+        next_state_index = state_number(next_state)
+
+        q_table[state_index, action_index] = q_table[state_index, action_index] + learning_rate * (
+            reward
+            + discount_factor * np.max(q_table[next_state_index])
+            - q_table[state_index, action_index]
+        )
+
+        state = next_state
+        total_reward = total_reward + reward
+
+        if state == goal:
+            break
+
+    rewards.append(total_reward)
+
+    if epsilon > epsilon_min:
+        epsilon = epsilon * epsilon_decay
+
+print("Training completed.")
+print("Final epsilon:", epsilon)
+
+print("Learned Q-table:")
+print(np.round(q_table, 2))
+
+plt.figure(figsize=(8, 5))
+plt.plot(rewards)
+plt.title("Q-Learning Training Performance")
+plt.xlabel("Episode")
+plt.ylabel("Total Reward")
+plt.show()
+
+state = start
+path = [state]
+
+for step in range(20):
+    state_index = state_number(state)
+    action_index = np.argmax(q_table[state_index])
+    action = actions[action_index]
+    next_state, reward = move(state, action)
+    state = next_state
+    path.append(state)
+
+    if state == goal:
+        break
+
+print("Learned path:")
+print(path)
+
+path_grid = grid.astype(str)
+
+for row in range(rows):
+    for col in range(cols):
+        if (row, col) in path:
+            path_grid[row, col] = "*"
+
+path_grid[start] = "S"
+path_grid[goal] = "G"
+
+print("Optimal Path:")
+print(path_grid)
+
+print("Exploration and Exploitation:")
+print("Initial epsilon:", 1.0)
+print("Final epsilon:", round(epsilon, 4))
+print("At the beginning, the agent explores different actions.")
+print("During training, epsilon decreases and the agent increasingly exploits learned Q-values.")
+print("The final policy is obtained by selecting the action with the highest Q-value.")
+</script>
+<script>
+const EXPS = [
+  {n:1,  title:"Feature Engineering – Missing Values, Encoding, Scaling", short:"Feature Engineering – Missing Values, Encoding, Scaling", data:"titanic.csv", q:"Apply basic feature engineering techniques such as handling missing values, encoding categorical variables, and scaling numerical attributes on the suitable open access dataset to prepare a clean and model ready dataset for machine learning analysis."},
+  {n:2,  title:"PCA and LDA – Dimensionality Reduction", short:"PCA and LDA – Dimensionality Reduction", data:"breast cancer.csv", q:"Make use of dimensionality reduction process using PCA and LDA on a suitable open-access high-dimensional dataset and observe the influence of feature reduction on model performance and computational efficiency."},
+  {n:3,  title:"Multiple Linear Regression", short:"Multiple Linear Regression – MSE, RMSE, R²", data:"California Housing (loaded by scikit-learn)", q:"Develop a multiple linear regression model using a suitable real-world open-access dataset and assess its predictive capability using regression evaluation metrics such as MSE, RMSE, and R²."},
+  {n:4,  title:"Polynomial Regression – Bias–Variance Trade-off", short:"Polynomial Regression – Bias–Variance Trade-off", data:"breast-cancer.csv and make_regression (generated, no file needed)", q:"Demonstrate the use of polynomial regression with varying polynomial degrees on a suitable open-access dataset and observe the effect of model complexity on prediction accuracy in terms of the bias–variance trade-off."},
+  {n:5,  title:"Ridge and Lasso Regularization", short:"Ridge and Lasso Regularization – VIF, Overfitting Gap", data:"BostonHousing.csv", q:"Classify data using regularization techniques such as Ridge and Lasso regression on a suitable multivariate open-access dataset and observe the influence on model overfitting and multi-collinearity."},
+  {n:6,  title:"Logistic Regression – Confusion Matrix", short:"Logistic Regression – Confusion Matrix, Precision, Recall, F1", data:"breast-cancer.csv", q:"Illustrate the performance of a binary classification model using logistic regression on a suitable open-access dataset through a confusion matrix, precision, recall, and F1-score."},
+  {n:7,  title:"SVM – Linear and RBF Kernel", short:"SVM – Linear and Nonlinear (RBF) Kernel", data:"breast-cancer.csv", q:"Utilize Support Vector Machine classifiers with linear and nonlinear kernels on a suitable open-access dataset and compare classification performance using appropriate evaluation metrics."},
+  {n:8,  title:"K-Means Clustering – Elbow Method", short:"K-Means Clustering – Elbow Method", data:"iris.csv", q:"Apply the K-Means clustering algorithm on a suitable open-access dataset to obtain the optimal number of clusters using the Elbow or Silhouette method."},
+  {n:9,  title:"DBSCAN – Clusters and Noise Points", short:"DBSCAN – Clusters and Noise Points", data:"Generated with make_blobs (no file needed)", q:"Employ a density-based clustering algorithm such as DBSCAN using a suitable open-access dataset to identify the clustering structure and noise points."},
+  {n:10, title:"Ensemble Learning – Random Forest vs Baseline", short:"Random Forest vs Logistic Regression Baseline", data:"iris.csv", q:"Analyze the performance of ensemble learning techniques such as Random Forest or Boosting on a suitable open-access dataset in comparison with a baseline machine learning model."},
+  {n:11, title:"Q-Learning – Grid World", short:"Q-Learning – Grid World, Exploration vs Exploitation", data:"No dataset needed", q:"Evaluate the performance of reinforcement learning using the Q-Learning algorithm for a simple game or decision-making problem (e.g., Tic-Tac-Toe or Grid World), focusing on exploration–exploitation strategies and the optimal policy."}
+];
+
+const getCode = n => document.getElementById("code-" + n).textContent.replace(/^\n/, "");
+
+async function copyText(text, btn, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    const t = document.createElement("textarea");
+    t.value = text;
+    t.style.position = "fixed";
+    t.style.opacity = "0";
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    t.remove();
+  }
+  const old = label;
+  btn.textContent = "✓ Copied";
+  btn.classList.add("done");
+  setTimeout(() => { btn.textContent = old; btn.classList.remove("done"); }, 1600);
+}
+
+const quick = document.getElementById("quick");
+const list = document.getElementById("list");
+
+EXPS.forEach(e => {
+  const c = document.createElement("div");
+  c.className = "card";
+  c.dataset.n = e.n;
+  c.innerHTML = '<h3>Experiment ' + e.n + ' <span class="tag">PY</span></h3><div class="sub">' + e.short + '</div>';
+  const b = document.createElement("button");
+  b.className = "copy";
+  const lbl = "⧉ Copy Experiment " + e.n;
+  b.textContent = lbl;
+  b.onclick = () => copyText(getCode(e.n), b, lbl);
+  c.appendChild(b);
+  quick.appendChild(c);
+
+  const s = document.createElement("section");
+  s.className = "exp open";
+  s.id = "exp" + e.n;
+  s.dataset.n = e.n;
+  s.dataset.search = (e.n + " experiment " + e.title + " " + e.short + " " + getCode(e.n)).toLowerCase();
+  s.innerHTML =
+    '<button class="exp-head" aria-expanded="true"><span class="no">EXPERIMENT ' + e.n + '</span><span class="ttl">' + e.title + '</span><span class="arrow">⌄</span></button>' +
+    '<div class="exp-body"><div class="q">' + e.q + '</div><div class="ds"><b>Dataset:</b> ' + e.data + '</div><div class="codewrap"><pre></pre></div></div>';
+  s.querySelector("pre").textContent = getCode(e.n);
+  const cb = document.createElement("button");
+  cb.className = "copy";
+  const l2 = "⧉ Copy Code";
+  cb.textContent = l2;
+  cb.onclick = () => copyText(getCode(e.n), cb, l2);
+  s.querySelector(".codewrap").prepend(cb);
+  const head = s.querySelector(".exp-head");
+  head.onclick = () => {
+    s.classList.toggle("open");
+    head.setAttribute("aria-expanded", s.classList.contains("open"));
+    syncToggle();
+  };
+  list.appendChild(s);
+});
+
+const search = document.getElementById("search");
+const count = document.getElementById("count");
+const toggleAll = document.getElementById("toggleAll");
+
+function applyFilter() {
+  const q = search.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll(".exp").forEach(s => {
+    const ok = !q || s.dataset.search.includes(q);
+    s.style.display = ok ? "" : "none";
+    if (ok) shown++;
+  });
+  document.querySelectorAll(".card").forEach(c => {
+    const ok = !q || document.getElementById("exp" + c.dataset.n).dataset.search.includes(q);
+    c.style.display = ok ? "" : "none";
+  });
+  count.textContent = "Showing " + shown + " of " + EXPS.length + " experiments";
+}
+search.addEventListener("input", applyFilter);
+
+function syncToggle() {
+  const anyOpen = [...document.querySelectorAll(".exp")].some(s => s.classList.contains("open"));
+  toggleAll.textContent = anyOpen ? "Collapse All" : "Expand All";
+}
+
+toggleAll.onclick = () => {
+  const anyOpen = [...document.querySelectorAll(".exp")].some(s => s.classList.contains("open"));
+  document.querySelectorAll(".exp").forEach(s => {
+    s.classList.toggle("open", !anyOpen);
+    s.querySelector(".exp-head").setAttribute("aria-expanded", !anyOpen);
+  });
+  syncToggle();
+};
+
+document.getElementById("chipAll").onclick = () => { search.value = ""; applyFilter(); };
+document.getElementById("chipPy").onclick = () => { search.value = ""; applyFilter(); };
+</script>
+</body>
+</html>
